@@ -1,0 +1,31 @@
+﻿<Window x:Class="WpfTaken.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfTaken"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Label Content="Taak:" HorizontalAlignment="Left" Margin="69,50,0,0" VerticalAlignment="Top"/>
+        <Label Content="Prioriteit:" HorizontalAlignment="Left" Margin="69,100,0,0" VerticalAlignment="Top"/>
+        <Label Content="Door:" HorizontalAlignment="Left" Margin="69,191,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="NaamTxt" HorizontalAlignment="Left" Margin="202,50,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="190"/>
+        <ComboBox x:Name="PrioriteitCmbbx" HorizontalAlignment="Left" Margin="202,100,0,0" VerticalAlignment="Top" Width="190">
+            <ComboBoxItem x:Name="hoog" Content="Hoog"/>
+            <ComboBoxItem x:Name="laag" Content="Laag"/>
+            <ComboBoxItem x:Name="gemiddeld" Content="Gemiddeld" />
+            <ComboBoxItem x:Name="selecteer" Content="Selecteer..." IsSelected="True" />
+        </ComboBox>
+        <RadioButton x:Name="radAdam" Content="Adam" HorizontalAlignment="Left" Margin="202,191,0,0" VerticalAlignment="Top" GroupName="group1"/>
+        <RadioButton x:Name="radBilal" Content="Bilal" HorizontalAlignment="Left" Margin="272,191,0,0" VerticalAlignment="Top" GroupName="group1"/>
+        <RadioButton x:Name="radChelsey" Content="Chelsey" HorizontalAlignment="Left" Margin="332,191,0,0" VerticalAlignment="Top" GroupName="group1"/>
+        <TextBlock x:Name="ErrorTxt" HorizontalAlignment="Left" Margin="69,292,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="114" Width="323" Foreground="Red"/>
+        <Button x:Name="Toevoegen" Content="Toevoegen" HorizontalAlignment="Left" Margin="283,258,0,0" VerticalAlignment="Top" Width="117" Click="Toevoegen_Click"/>
+        <ListBox x:Name="Lstbx" Margin="458,50,51,240" />
+        <Button x:Name="terugzettenBtn" Content="Terugzetten" HorizontalAlignment="Left" Margin="458,222,0,0" VerticalAlignment="Top" Width="115" IsEnabled="False"/>
+        <Button x:Name="verwijderenBtn" Content="Verwijderen" HorizontalAlignment="Left" Margin="625,222,0,0" VerticalAlignment="Top" Width="124" IsEnabled="False"/>
+        <Label Content="Dealine:" HorizontalAlignment="Left" Margin="70,147,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="Datumpicker" HorizontalAlignment="Left" Margin="202,149,0,0" VerticalAlignment="Top" Width="190"/>
+    </Grid>
+</Window>
