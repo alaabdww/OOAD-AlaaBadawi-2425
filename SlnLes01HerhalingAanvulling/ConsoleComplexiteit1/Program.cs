@@ -46,14 +46,14 @@ namespace ConsoleComplexiteit1
             for (int i = 0; i < a.Length; i++)
             {
                 char C = char.ToLower(a[i]);
-                if (C == 'x' || C == 'y' || C == 'z')
+                if (C == 'x' || C == 'y' || C == 'q')
                 {
                     complexiteit++;
                 }
 
             }
             complexiteit = complexiteit + (aantalLetters / 3) + lettergrepen;
-            return complexiteit;
+            return Math.Round(complexiteit, 1);
         }
         static void Main(string[] args)
         {
