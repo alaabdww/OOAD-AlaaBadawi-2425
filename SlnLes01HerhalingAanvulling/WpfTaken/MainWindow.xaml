@@ -22,9 +22,9 @@
         <RadioButton x:Name="radChelsey" Content="Chelsey" HorizontalAlignment="Left" Margin="332,191,0,0" VerticalAlignment="Top" GroupName="group1"/>
         <TextBlock x:Name="ErrorTxt" HorizontalAlignment="Left" Margin="69,292,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="114" Width="323" Foreground="Red"/>
         <Button x:Name="Toevoegen" Content="Toevoegen" HorizontalAlignment="Left" Margin="283,258,0,0" VerticalAlignment="Top" Width="117" Click="Toevoegen_Click"/>
-        <ListBox x:Name="Lstbx" Margin="458,50,51,240" />
-        <Button x:Name="terugzettenBtn" Content="Terugzetten" HorizontalAlignment="Left" Margin="458,222,0,0" VerticalAlignment="Top" Width="115" IsEnabled="False"/>
-        <Button x:Name="verwijderenBtn" Content="Verwijderen" HorizontalAlignment="Left" Margin="625,222,0,0" VerticalAlignment="Top" Width="124" IsEnabled="False"/>
+        <ListBox x:Name="Lstbx" Margin="458,50,51,240" SelectionChanged="Lstbx_SelectionChanged" />
+        <Button x:Name="terugzettenBtn" Content="Terugzetten" HorizontalAlignment="Left" Margin="458,222,0,0" VerticalAlignment="Top" Width="115" IsEnabled="False" Click="terugzettenBtn_Click"/>
+        <Button x:Name="verwijderenBtn" Content="Verwijderen" HorizontalAlignment="Left" Margin="625,222,0,0" VerticalAlignment="Top" Width="124" IsEnabled="False" Click="verwijderenBtn_Click"/>
         <Label Content="Dealine:" HorizontalAlignment="Left" Margin="70,147,0,0" VerticalAlignment="Top"/>
         <DatePicker x:Name="Datumpicker" HorizontalAlignment="Left" Margin="202,149,0,0" VerticalAlignment="Top" Width="190"/>
     </Grid>
