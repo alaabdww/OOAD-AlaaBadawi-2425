@@ -7,6 +7,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="54,10,54,207">
+            <Image Height="100" Width="100" Source="/Materiaal/argentina.png" Tag="argentina" MouseUp="Image_MouseUp"/>
+            <Image Height="100" Width="100" Source="/Materiaal/finland.png" Tag="finland" MouseUp="Image_MouseUp"/>
+            <Image Height="100" Width="100" Source="/Materiaal/japan.png" Tag="japan" MouseUp="Image_MouseUp"/>
+            <Image Height="100" Width="100" Source="/Materiaal/marokko.png" Tag="marokko" MouseUp="Image_MouseUp"/>
+            <Image Height="100" Width="100" Source="/Materiaal/nieuwzeeland.png" Tag="nieuwzeeland" MouseUp="Image_MouseUp"/>
+        </StackPanel>
+        <TextBlock x:Name="ResultaatTxt" HorizontalAlignment="Left" Margin="54,227,0,0" TextWrapping="Wrap" Text="Klik een land aan! Ben je klaar?" VerticalAlignment="Top" Height="74" Width="489" FontSize="18"/>
+        <Button x:Name="startBtn" Content="Start" HorizontalAlignment="Left" Margin="543,232,0,0" VerticalAlignment="Top" Height="52" Width="84" FontSize="18" Click="startBtn_Click"/>
+        <Rectangle x:Name="tijdsbalk" HorizontalAlignment="Left" Height="38" Margin="54,350,0,0" Stroke="Black" VerticalAlignment="Top" Width="500" Opacity="0.51" Fill="#FF3317FF"/>
+
     </Grid>
 </Window>
