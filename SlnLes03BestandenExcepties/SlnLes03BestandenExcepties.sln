@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAnagram", "ConsoleAnagram\ConsoleAnagram.csproj", "{CBCF2B90-52AB-41D1-B81A-B186278005BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfMatchFiles", "WpfMatchFiles\WpfMatchFiles.csproj", "{39B0F73C-3738-4AF9-A440-2D9BD74EA0EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{CBCF2B90-52AB-41D1-B81A-B186278005BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBCF2B90-52AB-41D1-B81A-B186278005BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBCF2B90-52AB-41D1-B81A-B186278005BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39B0F73C-3738-4AF9-A440-2D9BD74EA0EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39B0F73C-3738-4AF9-A440-2D9BD74EA0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39B0F73C-3738-4AF9-A440-2D9BD74EA0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39B0F73C-3738-4AF9-A440-2D9BD74EA0EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
