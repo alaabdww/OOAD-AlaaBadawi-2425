@@ -1,12 +1,45 @@
 ﻿<Window x:Class="WpfAdmin.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfAdmin"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Bedrijvenoverzicht" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Bedrijvenlijst -->
+        <ListBox x:Name="lstBedrijven" DisplayMemberPath="Naam"
+                 SelectionChanged="lstBedrijven_SelectionChanged" />
+
+        <!-- Detailweergave -->
+        <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Top">
+            <Label Content="Naam:" />
+            <Label x:Name="lblNaam" FontWeight="Bold"/>
+
+            <Label Content="Contactpersoon:" />
+            <Label x:Name="lblContactpersoon"/>
+
+            <Label Content="Adres:" />
+            <Label x:Name="lblAdres"/>
+
+            <Label Content="Postcode:" />
+            <Label x:Name="lblPostcode"/>
+
+            <Label Content="Gemeente:" />
+            <Label x:Name="lblGemeente"/>
+
+            <Label Content="Land:" />
+            <Label x:Name="lblLand"/>
+
+            <Label Content="Telefoon:" />
+            <Label x:Name="lblTelefoon"/>
+
+            <Label Content="E-mail:" />
+            <Label x:Name="lblEmail"/>
+
+            <Label Content="Status:" />
+            <Label x:Name="lblStatus"/>
+        </StackPanel>
     </Grid>
 </Window>

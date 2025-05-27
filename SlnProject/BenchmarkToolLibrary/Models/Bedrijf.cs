@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net.Mail;
-using System.Threading.Tasks;
 
 namespace BenchmarkToolLibrary.Models
 {
@@ -22,14 +18,14 @@ namespace BenchmarkToolLibrary.Models
         private string _email;
         public string Email
         {
-            get => _email;
+            get { return _email; }
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                     throw new ArgumentException();
                 try
                 {
-                    var addr = new MailAddress(value);
+                    MailAddress addr = new MailAddress(value);
                     _email = value;
                 }
                 catch
@@ -49,19 +45,18 @@ namespace BenchmarkToolLibrary.Models
         private string _status = "nieuw";
         public string Status
         {
-            get => _status;
-            set => _status = value ?? "nieuw";
+            get { return _status; }
+            set { _status = value ?? "nieuw"; }
         }
 
         public string Taal { get; set; }
-        public string Logo { get; set; }
+        public byte[] Logo { get; set; }  // <-- Toegevoegd voor afbeelding
         public string Nacecode { get; set; }
 
-        // Zet het Id via de constructor
         public Bedrijf(int id, string naam, string contactpersoon, string adres, string postcode, string gemeente,
             string land, string telefoon, string email, string btwNummer, string login, string wachtwoord,
             DateTime registratiedatum, DateTime? acceptatiedatum, DateTime laatstGewijzigd, string status,
-            string taal, string logo, string nacecode)
+            string taal, byte[] logo, string nacecode)
         {
             Id = id;
             Naam = naam;
@@ -84,7 +79,6 @@ namespace BenchmarkToolLibrary.Models
             Nacecode = nacecode;
         }
 
-        // Eventueel kun je de parameterloze constructor laten staan voor andere doeleinden
         public Bedrijf() { }
     }
 }
