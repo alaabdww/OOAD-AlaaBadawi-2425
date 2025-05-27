@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{07DCE087-AA87-49D7-9C45-3B638891AE80}</ProjectGuid>
+    <ProjectGuid>{E92D2EE1-5936-41EE-A12C-3AA9A4B6048F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>BenchmarkCompanyApp</RootNamespace>
-    <AssemblyName>BenchmarkCompanyApp</AssemblyName>
+    <RootNamespace>BenchmarkAdminApp</RootNamespace>
+    <AssemblyName>BenchmarkAdminApp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -53,6 +53,7 @@
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -92,6 +93,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BenchmarkLib\BenchmarkLib.csproj">
+      <Project>{c4131313-8370-409d-b2dc-bc793929c08d}</Project>
+      <Name>BenchmarkLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

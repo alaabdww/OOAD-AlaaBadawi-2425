@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BenchmarkLib;
+using BenchmarkLib.Models;
+
 
 namespace BenchmarkAdminApp
 {
@@ -23,6 +26,12 @@ namespace BenchmarkAdminApp
         public MainWindow()
         {
             InitializeComponent();
+            DatabaseManager dbManager = new DatabaseManager();
+            List<Company> bedrijven = dbManager.GetAllCompanies();
+
+            string namen = string.Join(", ", bedrijven.Select(b => b.Name));
+            MessageBox.Show($"Bedrijven: {namen}");
+
         }
     }
 }
