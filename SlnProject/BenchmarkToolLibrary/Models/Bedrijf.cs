@@ -57,18 +57,13 @@ namespace BenchmarkToolLibrary.Models
         public string Logo { get; set; }
         public string Nacecode { get; set; }
 
-        public Bedrijf()
-        {
-            _status = "nieuw";
-            Registratiedatum = DateTime.Now;
-            LaatstGewijzigd = DateTime.Now;
-        }
-
-        public Bedrijf(string naam, string contactpersoon, string adres, string postcode, string gemeente,
+        // Zet het Id via de constructor
+        public Bedrijf(int id, string naam, string contactpersoon, string adres, string postcode, string gemeente,
             string land, string telefoon, string email, string btwNummer, string login, string wachtwoord,
             DateTime registratiedatum, DateTime? acceptatiedatum, DateTime laatstGewijzigd, string status,
             string taal, string logo, string nacecode)
         {
+            Id = id;
             Naam = naam;
             Contactpersoon = contactpersoon;
             Adres = adres;
@@ -88,5 +83,8 @@ namespace BenchmarkToolLibrary.Models
             Logo = logo;
             Nacecode = nacecode;
         }
+
+        // Eventueel kun je de parameterloze constructor laten staan voor andere doeleinden
+        public Bedrijf() { }
     }
 }
