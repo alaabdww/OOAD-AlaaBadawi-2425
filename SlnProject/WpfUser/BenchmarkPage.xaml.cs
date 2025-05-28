@@ -14,38 +14,28 @@ namespace WpfUser
         private int bedrijfId;
         private Frame frame;
 
-        public BenchmarkPage(int bedrijfId)
+        public BenchmarkPage(Frame frame)
         {
             InitializeComponent();
-            this.bedrijfId = bedrijfId;
+            this.frame = frame;
+            if (Application.Current.Properties["BedrijfId"] != null)
+                bedrijfId = (int)Application.Current.Properties["BedrijfId"];
+            else
+                bedrijfId = 1;
             LaadJaren();
         }
 
-        public BenchmarkPage(Frame frame)
-        {
-            this.frame = frame;
-        }
-
-        /// <summary>
-        /// Laad alle beschikbare jaartallen voor dit bedrijf in de ComboBox.
-        /// </summary>
         private void LaadJaren()
         {
             cmbJaar.Items.Clear();
             List<int> jaren = RapportData.GetJarenVoorBedrijf(bedrijfId);
             foreach (int jaar in jaren)
-            {
                 cmbJaar.Items.Add(jaar);
-            }
+
             if (cmbJaar.Items.Count > 0)
-            {
                 cmbJaar.SelectedIndex = 0;
-            }
         }
 
-        /// <summary>
-        /// Toon de staafdiagram voor het geselecteerde jaar.
-        /// </summary>
         private void ToonBenchmark()
         {
             if (cmbJaar.SelectedItem == null)
@@ -58,9 +48,6 @@ namespace WpfUser
             ToonBenchmarkStaafdiagram(data);
         }
 
-        /// <summary>
-        /// Bouw de staafdiagram met Rectangle-objecten.
-        /// </summary>
         private void ToonBenchmarkStaafdiagram(List<BenchmarkResultaat> data)
         {
             staafDiagramPanel.Children.Clear();
@@ -68,17 +55,12 @@ namespace WpfUser
 
             double max = 0.0;
             foreach (BenchmarkResultaat item in data)
-            {
-                if (item.Waarde > max)
-                {
-                    max = item.Waarde;
-                }
-            }
-            if (max == 0) { max = 1.0; }
+                if (item.Waarde > max) max = item.Waarde;
+            if (max == 0) max = 1.0;
 
             foreach (BenchmarkResultaat item in data)
             {
-                double hoogte = 180 * (item.Waarde / max); // Max hoogte: 180px
+                double hoogte = 180 * (item.Waarde / max);
                 Rectangle staaf = new Rectangle();
                 staaf.Width = 40;
                 staaf.Height = hoogte;
@@ -105,54 +87,37 @@ namespace WpfUser
 
         private void btnFilter_Click(object sender, RoutedEventArgs e)
         {
+            lblFeedback.Text = "Benchmark wordt geladen...";
             ToonBenchmark();
         }
     }
 
-    /// <summary>
-    /// Modelklasse voor een benchmarkresultaat (categorie + waarde)
-    /// </summary>
     public class BenchmarkResultaat
     {
         public string CategorieNaam { get; set; }
         public double Waarde { get; set; }
     }
 
-    /// <summary>
-    /// Dummy data-access-klasse voor demonstratie.
-    /// Je vervangt deze door je echte RapportData-implementatie in de class library.
-    /// </summary>
     public static class RapportData
     {
         public static List<int> GetJarenVoorBedrijf(int bedrijfId)
         {
-            // Dummy implementatie, vervang door echte database-call
-            List<int> jaren = new List<int>();
-            jaren.Add(2022);
-            jaren.Add(2023);
-            return jaren;
+            return new List<int> { 2022, 2023 };
         }
 
         public static List<BenchmarkResultaat> GetVergelijking(int bedrijfId, int jaar)
         {
-            // Dummy data voor grafiek, vervang door echte data uit de database
-            List<BenchmarkResultaat> resultaten = new List<BenchmarkResultaat>();
-            resultaten.Add(new BenchmarkResultaat { CategorieNaam = "Personeel", Waarde = 10000 });
-            resultaten.Add(new BenchmarkResultaat { CategorieNaam = "Materiaal", Waarde = 6000 });
-            resultaten.Add(new BenchmarkResultaat { CategorieNaam = "ICT", Waarde = 4500 });
-            resultaten.Add(new BenchmarkResultaat { CategorieNaam = "Kantoor", Waarde = 3200 });
-            resultaten.Add(new BenchmarkResultaat { CategorieNaam = "Overig", Waarde = 1800 });
-            return resultaten;
+            return new List<BenchmarkResultaat>
+            {
+                new BenchmarkResultaat { CategorieNaam = "Personeel", Waarde = 10000 },
+                new BenchmarkResultaat { CategorieNaam = "Materiaal", Waarde = 6000 },
+                new BenchmarkResultaat { CategorieNaam = "ICT", Waarde = 4500 },
+                new BenchmarkResultaat { CategorieNaam = "Kantoor", Waarde = 3200 },
+                new BenchmarkResultaat { CategorieNaam = "Overig", Waarde = 1800 }
+            };
         }
 
-        internal static void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal static List<Jaarrapport> GetAllVoorBedrijf(int bedrijfId)
-        {
-            throw new NotImplementedException();
-        }
+        internal static void Delete(int id) { }
+        internal static List<Jaarrapport> GetAllVoorBedrijf(int bedrijfId) { return new List<Jaarrapport>(); }
     }
 }
