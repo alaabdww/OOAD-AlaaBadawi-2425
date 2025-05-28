@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +8,7 @@ namespace BenchmarkToolLibrary.Models
 {
     public class Jaarrapport
     {
-        public int Id { get; }
+        public int Id { get; private set; }
 
         public int BedrijfId { get; set; }
         public int Jaar { get; set; }
@@ -17,8 +17,8 @@ namespace BenchmarkToolLibrary.Models
         private string _status = "concept";
         public string Status
         {
-            get => _status;
-            set => _status = value ?? "concept";
+            get { return _status; }
+            set { _status = value ?? "concept"; }
         }
 
         public Jaarrapport()
@@ -27,8 +27,23 @@ namespace BenchmarkToolLibrary.Models
             Rapportdatum = DateTime.Now;
         }
 
+        /// <summary>
+        /// Constructor voor toevoegen (zonder Id)
+        /// </summary>
         public Jaarrapport(int bedrijfId, int jaar, DateTime rapportdatum, string status)
         {
+            BedrijfId = bedrijfId;
+            Jaar = jaar;
+            Rapportdatum = rapportdatum;
+            Status = status ?? "concept";
+        }
+
+        /// <summary>
+        /// Constructor voor ophalen uit de database (met Id)
+        /// </summary>
+        public Jaarrapport(int id, int bedrijfId, int jaar, DateTime rapportdatum, string status)
+        {
+            Id = id;
             BedrijfId = bedrijfId;
             Jaar = jaar;
             Rapportdatum = rapportdatum;

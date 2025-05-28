@@ -340,5 +340,149 @@ namespace BenchmarkToolLibrary.Data
             }
             return false;
         }
+
+        /// <summary>
+        /// Verwijdert een bedrijf op basis van het Id.
+        /// </summary>
+        public static void Delete(int bedrijfId)
+        {
+            string query = "DELETE FROM Companies WHERE id = @id";
+            using (SqlConnection connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", bedrijfId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        /// <summary>
+        /// Haalt alle bedrijven met de opgegeven status op.
+        /// </summary>
+        public static List<Bedrijf> GetByStatus(string status)
+        {
+            List<Bedrijf> bedrijven = new List<Bedrijf>();
+            string query = @"SELECT id, name, contact, address, zip, city, country, phone, email, btw, login, password, regdate, acceptdate, lastmodified, status, language, logo, nacecode_code
+                     FROM Companies WHERE status = @status";
+            using (SqlConnection connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@status", status);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int id = (int)reader["id"];
+                            string naam = reader["name"] as string ?? "";
+                            string contactpersoon = reader["contact"] as string ?? "";
+                            string adres = reader["address"] as string ?? "";
+                            string postcode = reader["zip"] as string ?? "";
+                            string gemeente = reader["city"] as string ?? "";
+                            string land = reader["country"] as string ?? "";
+                            string telefoon = reader["phone"] as string ?? "";
+                            string email = reader["email"] as string ?? "";
+                            string btwNummer = reader["btw"] as string ?? "";
+                            string login = reader["login"] as string ?? "";
+                            string wachtwoord = ""; // Laat leeg, nooit de hash teruggeven!
+                            DateTime registratiedatum = reader["regdate"] != DBNull.Value ? (DateTime)reader["regdate"] : DateTime.MinValue;
+                            DateTime? acceptatiedatum = reader["acceptdate"] != DBNull.Value ? (DateTime?)reader["acceptdate"] : null;
+                            DateTime laatstGewijzigd = reader["lastmodified"] != DBNull.Value ? (DateTime)reader["lastmodified"] : DateTime.MinValue;
+                            string statusStr = reader["status"] as string ?? "nieuw";
+                            string taal = reader["language"] as string ?? "";
+                            byte[] logo = reader["logo"] != DBNull.Value ? (byte[])reader["logo"] : null;
+                            string nacecode = reader["nacecode_code"] as string ?? "";
+
+                            Bedrijf bedrijf = new Bedrijf(
+                                id,
+                                naam,
+                                contactpersoon,
+                                adres,
+                                postcode,
+                                gemeente,
+                                land,
+                                telefoon,
+                                email,
+                                btwNummer,
+                                login,
+                                wachtwoord,
+                                registratiedatum,
+                                acceptatiedatum,
+                                laatstGewijzigd,
+                                statusStr,
+                                taal,
+                                logo,
+                                nacecode
+                            );
+                            bedrijven.Add(bedrijf);
+                        }
+                    }
+                }
+            }
+            return bedrijven;
+        }
+
+
+        /// <summary>
+        /// Wijzigt de status van een bedrijf.
+        /// </summary>
+        public static void UpdateStatus(int bedrijfId, string status)
+        {
+            string query = "UPDATE Companies SET status = @status WHERE id = @id";
+            using (SqlConnection connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@status", status);
+                    command.Parameters.AddWithValue("@id", bedrijfId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static Bedrijf GetById(int bedrijfId)
+        {
+            Bedrijf bedrijf = null;
+            string query = "SELECT id, name, contact, address, zip, city, country, phone, email, btw, login, regdate, acceptdate, lastmodified, status, language, logo, nacecode_code FROM Companies WHERE id = @id";
+            using (SqlConnection connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", bedrijfId);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int id = (int)reader["id"];
+                            string naam = reader["name"] as string ?? "";
+                            string contactpersoon = reader["contact"] as string ?? "";
+                            string adres = reader["address"] as string ?? "";
+                            string postcode = reader["zip"] as string ?? "";
+                            string gemeente = reader["city"] as string ?? "";
+                            string land = reader["country"] as string ?? "";
+                            string telefoon = reader["phone"] as string ?? "";
+                            string email = reader["email"] as string ?? "";
+                            string btwNummer = reader["btw"] as string ?? "";
+                            string login = reader["login"] as string ?? "";
+                            DateTime registratiedatum = reader["regdate"] != DBNull.Value ? (DateTime)reader["regdate"] : DateTime.MinValue;
+                            DateTime? acceptatiedatum = reader["acceptdate"] != DBNull.Value ? (DateTime?)reader["acceptdate"] : null;
+                            DateTime laatstGewijzigd = reader["lastmodified"] != DBNull.Value ? (DateTime)reader["lastmodified"] : DateTime.MinValue;
+                            string status = reader["status"] as string ?? "nieuw";
+                            string taal = reader["language"] as string ?? "";
+                            byte[] logo = reader["logo"] != DBNull.Value ? (byte[])reader["logo"] : null;
+                            string nacecode = reader["nacecode_code"] as string ?? "";
+                            bedrijf = new Bedrijf(id, naam, contactpersoon, adres, postcode, gemeente, land, telefoon, email, btwNummer, login, "", registratiedatum, acceptatiedatum, laatstGewijzigd, status, taal, logo, nacecode);
+                        }
+                    }
+                }
+            }
+            return bedrijf;
+        }
+
+
     }
 }

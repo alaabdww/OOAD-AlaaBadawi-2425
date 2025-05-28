@@ -1,12 +1,9 @@
-﻿<Window x:Class="WpfUser.MainWindow"
+<Window x:Class="WpfUser.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfUser"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="BenchmarkTool - Gebruiker" Height="550" Width="900"
+        Background="LightGray" WindowStartupLocation="CenterScreen">
+   <Border BorderBrush="Orange" BorderThickness="2" CornerRadius="10" Margin="10" Padding="0" Background="White">
+      <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+   </Border>
 </Window>

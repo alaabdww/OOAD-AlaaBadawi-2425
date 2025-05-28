@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,16 +8,16 @@ namespace BenchmarkToolLibrary.Models
 {
     public class Nacecode
     {
-        public string Code { get; }
+        public string Code { get; private set; }
 
         private string _beschrijving = string.Empty;
         public string Beschrijving
         {
-            get => _beschrijving;
+            get { return _beschrijving; }
             set
             {
                 if (value != null && value.Length > 200)
-                    throw new ArgumentException();
+                    throw new ArgumentException("Beschrijving mag niet langer zijn dan 200 tekens.");
                 _beschrijving = value ?? string.Empty;
             }
         }
