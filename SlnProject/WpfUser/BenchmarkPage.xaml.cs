@@ -5,18 +5,25 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using BenchmarkToolLibrary.Data;
+using BenchmarkToolLibrary.Models;
 
 namespace WpfUser
 {
     public partial class BenchmarkPage : Page
     {
         private int bedrijfId;
+        private Frame frame;
 
         public BenchmarkPage(int bedrijfId)
         {
             InitializeComponent();
             this.bedrijfId = bedrijfId;
             LaadJaren();
+        }
+
+        public BenchmarkPage(Frame frame)
+        {
+            this.frame = frame;
         }
 
         /// <summary>
@@ -136,6 +143,16 @@ namespace WpfUser
             resultaten.Add(new BenchmarkResultaat { CategorieNaam = "Kantoor", Waarde = 3200 });
             resultaten.Add(new BenchmarkResultaat { CategorieNaam = "Overig", Waarde = 1800 });
             return resultaten;
+        }
+
+        internal static void Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static List<Jaarrapport> GetAllVoorBedrijf(int bedrijfId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

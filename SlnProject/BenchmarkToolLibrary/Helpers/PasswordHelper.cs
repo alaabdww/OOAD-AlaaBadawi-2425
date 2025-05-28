@@ -19,11 +19,14 @@ namespace BenchmarkToolLibrary.Helpers
         /// <returns>Base64-string van de hash</returns>
         public static string HashPassword(string password)
         {
-            SHA256 sha = SHA256.Create();
-            byte[] bytes = Encoding.UTF8.GetBytes(password ?? "");
-            byte[] hash = sha.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
+            using (SHA256 sha = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(password);
+                byte[] hash = sha.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
         }
+
 
         /// <summary>
         /// Vergelijkt een cleartext wachtwoord met een opgeslagen hash.

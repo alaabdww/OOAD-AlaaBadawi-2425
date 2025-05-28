@@ -14,7 +14,13 @@
                <Label Content="Wachtwoord:" Width="100"/>
                <PasswordBox x:Name="pwdWachtwoord" Width="180"/>
             </StackPanel>
-            <Button x:Name="btnLogin" Content="Inloggen" Width="120" Height="34" Background="Orange" Foreground="White" Click="btnLogin_Click"/>
+            <Button x:Name="btnLogin"
+                    Content="Inloggen"
+                    Width="120"
+                    Height="34"
+                    Background="Orange"
+                    Foreground="White"
+                    Click="btnLogin_Click"/>
             <TextBlock x:Name="txtFeedback" Foreground="Red" Margin="0,16,0,0"/>
          </StackPanel>
       </Border>

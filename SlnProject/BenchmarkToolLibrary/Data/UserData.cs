@@ -1,6 +1,9 @@
 using System.Data.SqlClient;
 using System.Configuration;
 using BenchmarkToolLibrary.Helpers; // Voor HashPassword
+using System.Security.Cryptography;
+using System.Text;
+using System.Windows;
 
 public static class UserData
 {
