@@ -5,6 +5,11 @@
    <Grid>
       <Border BorderBrush="Orange" BorderThickness="2" CornerRadius="8" Background="White" Padding="26" Margin="60">
          <StackPanel>
+            <!-- HOME MENU KNOP -->
+            <Button Content="Home menu"
+                    Width="120" Margin="0,0,0,16"
+                    Background="Orange" Foreground="White" FontWeight="Bold"
+                    Click="btnHome_Click"/>
             <TextBlock Text="Mijn Profiel" FontSize="20" Foreground="Orange" FontWeight="Bold" Margin="0,0,0,18"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                <Label Content="Logo:" Width="90"/>
@@ -45,7 +50,6 @@
             <TextBlock x:Name="txtFeedback" Foreground="Red" Margin="0,12,0,0"/>
             <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
                <Button Content="Opslaan" Width="110" Background="Orange" Foreground="White" Click="btnOpslaan_Click"/>
-               <Button Content="Terug" Width="90" Margin="16,0,0,0" Background="Orange" Foreground="White" Click="btnTerug_Click"/>
             </StackPanel>
          </StackPanel>
       </Border>

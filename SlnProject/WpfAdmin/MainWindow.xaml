@@ -16,6 +16,19 @@
             <Button Content="Bewerk" Click="BtnBewerk_Click" Width="80" Margin="3" Background="Orange" Foreground="White"/>
             <Button Content="Verwijder" Click="BtnVerwijder_Click" Width="80" Margin="3" Background="Orange" Foreground="White"/>
          </StackPanel>
+         <!-- Nieuwe knop hieronder als aparte stackpanel voor mooie spacing -->
+         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+            <Button Content="Registratie-aanvragen"
+                        x:Name="BtnRegistratieAanvragen"
+                        Click="BtnRegistratieAanvragen_Click"
+                        Width="260"
+                        Height="32"
+                        Background="Orange"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        FontSize="14"
+                        />
+         </StackPanel>
       </StackPanel>
       <!-- Rechterkolom: Details -->
       <Border Grid.Column="1" BorderThickness="2" BorderBrush="Orange" CornerRadius="8" Margin="18,0,0,0" Padding="16" Background="White">

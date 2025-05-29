@@ -6,9 +6,6 @@ using BenchmarkToolLibrary.Models;
 
 namespace BenchmarkToolLibrary.Data
 {
-    /// <summary>
-    /// Datalaag voor jaarrapporten en benchmarking (volgens ERD).
-    /// </summary>
     public static class RapportData
     {
         private static string connString = ConfigurationManager.ConnectionStrings["connStr"].ConnectionString;
@@ -32,13 +29,11 @@ namespace BenchmarkToolLibrary.Data
                         {
                             int id = (int)reader["id"];
                             int jaar = (int)reader["year"];
-                            // Je ERD heeft geen datum in Yearreports, enkel 'year', 'fte', 'company_id'
-                            // Eventueel uitbreiden als je meer kolommen wil tonen
-
-                            // Modelklasse Jaarrapport moet een constructor hebben met: (int id, int bedrijfId, int jaar, DateTime rapportdatum, string status)
-                            // Omdat je geen rapportdatum/status hebt in de tabel, vul aan met default
-                            Jaarrapport rapport = new Jaarrapport(id, bedrijfId, jaar, DateTime.Now, "concept");
-                            lijst.Add(rapport);
+                            int compId = (int)reader["company_id"];
+                            // Omdat rapportdatum/status niet in de tabel staan: vul defaults in
+                            DateTime rapportdatum = DateTime.Now;
+                            string status = "concept";
+                            lijst.Add(new Jaarrapport(id, compId, jaar, rapportdatum, status));
                         }
                     }
                 }
@@ -62,9 +57,7 @@ namespace BenchmarkToolLibrary.Data
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
-                        {
                             jaren.Add((int)reader["year"]);
-                        }
                     }
                 }
             }
@@ -72,42 +65,45 @@ namespace BenchmarkToolLibrary.Data
         }
 
         /// <summary>
-        /// Haal benchmarkinggegevens op: naam bedrijf + totale kosten voor een bepaald jaar.
+        /// Haal benchmarkinggegevens op: totale kosten per categorie voor geselecteerd jaar en huidig bedrijf.
         /// </summary>
-        public static List<BenchmarkResultaat> GetVergelijking(int jaar)
+        public static List<BenchmarkResultaat> GetVergelijking(int bedrijfId, int jaar)
         {
-            List<BenchmarkResultaat> resultaten = new List<BenchmarkResultaat>();
+            var resultaten = new List<BenchmarkResultaat>();
+
             string query = @"
-                SELECT c.name AS NaamBedrijf, 
-                       SUM(k.value) AS Waarde
-                FROM Yearreports y
-                INNER JOIN Companies c ON y.company_id = c.id
-                INNER JOIN Costs k ON y.id = k.yearreport_id
-                WHERE y.year = @jaar
-                GROUP BY c.name
-                ORDER BY Waarde DESC";
+        SELECT c.text AS CategorieNaam, SUM(k.value) AS Waarde
+        FROM Yearreports y
+        INNER JOIN Costs k ON y.id = k.yearreport_id
+        INNER JOIN Categories c ON k.category_nr = c.nr
+        WHERE y.company_id = @bedrijfId AND y.year = @jaar
+        GROUP BY c.text
+        ORDER BY Waarde DESC";
+
             using (SqlConnection connection = new SqlConnection(connString))
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
+                    command.Parameters.AddWithValue("@bedrijfId", bedrijfId);
                     command.Parameters.AddWithValue("@jaar", jaar);
+
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            string naam = reader["NaamBedrijf"] as string ?? "";
-                            double waarde = reader["Waarde"] != DBNull.Value ? Convert.ToDouble(reader["Waarde"]) : 0.0;
-                            BenchmarkResultaat res = new BenchmarkResultaat();
-                            res.NaamBedrijf = naam;
-                            res.Waarde = waarde;
-                            resultaten.Add(res);
+                            resultaten.Add(new BenchmarkResultaat
+                            {
+                                CategorieNaam = reader["CategorieNaam"] as string ?? "",
+                                Waarde = reader["Waarde"] != DBNull.Value ? Convert.ToDouble(reader["Waarde"]) : 0.0
+                            });
                         }
                     }
                 }
             }
             return resultaten;
         }
+
 
         /// <summary>
         /// Verwijdert een jaarrapport.

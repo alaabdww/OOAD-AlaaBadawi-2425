@@ -17,7 +17,6 @@ namespace WpfUser
             InitializeComponent();
             this.frame = frame;
 
-            // Controleer of de property bestaat en converteer naar int
             if (Application.Current.Properties["BedrijfId"] != null)
             {
                 bedrijfId = (int)Application.Current.Properties["BedrijfId"];
@@ -93,7 +92,7 @@ namespace WpfUser
             }
         }
 
-        private void btnTerug_Click(object sender, RoutedEventArgs e)
+        private void btnHome_Click(object sender, RoutedEventArgs e)
         {
             frame.Content = new DashboardPage(frame);
         }

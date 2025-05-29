@@ -6,7 +6,7 @@
    <Border BorderBrush="Orange" BorderThickness="2" CornerRadius="8" Margin="10" Padding="18" Background="White">
       <ScrollViewer>
          <StackPanel>
-            <TextBlock Text="Bedrijf bewerken" FontWeight="Bold" FontSize="22" Foreground="Orange" Margin="0,0,0,14"/>
+            <TextBlock Text="Bedrijf Bewerken" FontWeight="Bold" FontSize="22" Foreground="Orange" Margin="0,0,0,14"/>
             <Label Content="Naam:"/>
             <TextBox x:Name="txtNaam"/>
             <Label Content="Contactpersoon:"/>
@@ -26,18 +26,22 @@
             <Label Content="BTW-nummer:"/>
             <TextBox x:Name="txtBtwNummer"/>
             <Label Content="Login:"/>
-            <TextBox x:Name="txtLogin"/>
-            <Label Content="Nieuw wachtwoord (optioneel):"/>
-            <PasswordBox x:Name="pwdNieuwWachtwoord"/>
+            <TextBox x:Name="txtLogin" IsReadOnly="True"/>
+            <Label Content="Wachtwoord (leeg laten = niet wijzigen):"/>
+            <PasswordBox x:Name="pwdWachtwoord"/>
             <Label Content="Status:"/>
-            <ComboBox x:Name="cmbStatus"/>
+            <ComboBox x:Name="cmbStatus">
+               <ComboBoxItem Content="nieuw"/>
+               <ComboBoxItem Content="actief"/>
+               <ComboBoxItem Content="geweigerd"/>
+            </ComboBox>
             <Label Content="Taal:"/>
             <TextBox x:Name="txtTaal"/>
             <Label Content="Nacecode:"/>
             <TextBox x:Name="txtNacecode"/>
             <Label Content="Logo:"/>
             <StackPanel Orientation="Horizontal">
-               <Button Content="Wijzig logo..." Width="120" Click="BtnSelectLogo_Click" Background="Orange" Foreground="White"/>
+               <Button Content="Selecteer logo..." Width="120" Click="BtnSelectLogo_Click" Background="Orange" Foreground="White"/>
                <Image x:Name="imgLogo" Height="65" Margin="10,0"/>
             </StackPanel>
             <TextBlock x:Name="txtFeedback" Foreground="Red" Margin="0,8,0,0"/>

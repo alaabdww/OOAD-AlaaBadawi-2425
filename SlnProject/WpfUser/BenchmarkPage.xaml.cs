@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using BenchmarkToolLibrary.Data;
-using BenchmarkToolLibrary.Models;
 
 namespace WpfUser
 {
@@ -90,34 +89,10 @@ namespace WpfUser
             lblFeedback.Text = "Benchmark wordt geladen...";
             ToonBenchmark();
         }
-    }
 
-    public class BenchmarkResultaat
-    {
-        public string CategorieNaam { get; set; }
-        public double Waarde { get; set; }
-    }
-
-    public static class RapportData
-    {
-        public static List<int> GetJarenVoorBedrijf(int bedrijfId)
+        private void btnHome_Click(object sender, RoutedEventArgs e)
         {
-            return new List<int> { 2022, 2023 };
+            frame.Content = new DashboardPage(frame);
         }
-
-        public static List<BenchmarkResultaat> GetVergelijking(int bedrijfId, int jaar)
-        {
-            return new List<BenchmarkResultaat>
-            {
-                new BenchmarkResultaat { CategorieNaam = "Personeel", Waarde = 10000 },
-                new BenchmarkResultaat { CategorieNaam = "Materiaal", Waarde = 6000 },
-                new BenchmarkResultaat { CategorieNaam = "ICT", Waarde = 4500 },
-                new BenchmarkResultaat { CategorieNaam = "Kantoor", Waarde = 3200 },
-                new BenchmarkResultaat { CategorieNaam = "Overig", Waarde = 1800 }
-            };
-        }
-
-        internal static void Delete(int id) { }
-        internal static List<Jaarrapport> GetAllVoorBedrijf(int bedrijfId) { return new List<Jaarrapport>(); }
     }
 }

@@ -5,7 +5,7 @@ namespace BenchmarkToolLibrary.Models
 {
     public class Bedrijf
     {
-        public int Id { get; }
+        public int Id { get; private set; }
 
         public string Naam { get; set; }
         public string Contactpersoon { get; set; }
@@ -50,7 +50,7 @@ namespace BenchmarkToolLibrary.Models
         }
 
         public string Taal { get; set; }
-        public byte[] Logo { get; set; }  // <-- Toegevoegd voor afbeelding
+        public byte[] Logo { get; set; }
         public string Nacecode { get; set; }
 
         public Bedrijf(int id, string naam, string contactpersoon, string adres, string postcode, string gemeente,
@@ -80,5 +80,21 @@ namespace BenchmarkToolLibrary.Models
         }
 
         public Bedrijf() { }
+
+        // Setter zodat Data-layer Id kan instellen na Insert
+        public void SetId(int id)
+        {
+            Id = id;
+        }
+
+        // Clone voor edit-copie
+        public Bedrijf Clone()
+        {
+            return new Bedrijf(
+                Id, Naam, Contactpersoon, Adres, Postcode, Gemeente, Land, Telefoon, Email, BtwNummer, Login,
+                Wachtwoord, Registratiedatum, Acceptatiedatum, LaatstGewijzigd, Status, Taal,
+                Logo != null ? (byte[])Logo.Clone() : null, Nacecode
+            );
+        }
     }
 }

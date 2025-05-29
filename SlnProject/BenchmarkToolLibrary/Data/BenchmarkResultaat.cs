@@ -8,7 +8,8 @@ namespace BenchmarkToolLibrary.Data
 {
     public class BenchmarkResultaat
     {
-        public string NaamBedrijf { get; set; }
+        public string CategorieNaam { get; set; }   // Bijv. Personeel, ICT, ...
         public double Waarde { get; set; }
     }
 }
+

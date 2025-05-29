@@ -13,8 +13,8 @@
                <Button Content="Mijn Rapporten" Width="150" Margin="0,0,10,0" Background="Orange" Foreground="White" Click="btnRapporten_Click"/>
                <Button Content="Benchmarken" Width="150" Margin="0,0,10,0" Background="Orange" Foreground="White" Click="btnBenchmark_Click"/>
                <Button Content="Profiel" Width="120" Background="Orange" Foreground="White" Click="btnProfiel_Click"/>
-               <Button Content="Uitloggen" Width="120" Background="Orange" Foreground="White" Click="btnUitloggen_Click"/>
-            </StackPanel>
+                    <Button Content="Uitloggen" Width="120" Background="Orange" Foreground="White" Click="btnUitloggen_Click"/>
+                </StackPanel>
          </StackPanel>
       </Border>
    </Grid>

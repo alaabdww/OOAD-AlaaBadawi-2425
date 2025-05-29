@@ -7,416 +7,24 @@ using BenchmarkToolLibrary.Helpers;
 
 namespace BenchmarkToolLibrary.Data
 {
-    /// <summary>
-    /// Bevat alle database-acties voor de Company/Bedrijf-tabel.
-    /// </summary>
     public class BedrijfData
     {
         private static string connString = ConfigurationManager.ConnectionStrings["connStr"].ConnectionString;
 
-        /// <summary>
-        /// Haalt alle bedrijven uit de database op.
-        /// Het wachtwoordveld van elk bedrijf is altijd leeg (de hash wordt niet geladen).
-        /// </summary>
-        /// <returns>Lijst van bedrijven</returns>
         public static List<Bedrijf> GetAll()
         {
             List<Bedrijf> bedrijven = new List<Bedrijf>();
             string query = @"SELECT id, name, contact, address, zip, city, country, phone, email, btw, login, regdate, acceptdate, lastmodified, status, language, logo, nacecode_code FROM Companies";
-            try
+            using (SqlConnection conn = new SqlConnection(connString))
             {
-                using (SqlConnection connection = new SqlConnection(connString))
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int id = (int)reader["id"];
-                                string naam = reader["name"] as string ?? "";
-                                string contactpersoon = reader["contact"] as string ?? "";
-                                string adres = reader["address"] as string ?? "";
-                                string postcode = reader["zip"] as string ?? "";
-                                string gemeente = reader["city"] as string ?? "";
-                                string land = reader["country"] as string ?? "";
-                                string telefoon = reader["phone"] as string ?? "";
-                                string email = reader["email"] as string ?? "";
-                                string btwNummer = reader["btw"] as string ?? "";
-                                string login = reader["login"] as string ?? "";
-                                string wachtwoord = ""; // Nooit de hash teruggeven!
-                                DateTime registratiedatum = reader["regdate"] != DBNull.Value ? (DateTime)reader["regdate"] : DateTime.MinValue;
-                                DateTime? acceptatiedatum = reader["acceptdate"] != DBNull.Value ? (DateTime?)reader["acceptdate"] : null;
-                                DateTime laatstGewijzigd = reader["lastmodified"] != DBNull.Value ? (DateTime)reader["lastmodified"] : DateTime.MinValue;
-                                string status = reader["status"] as string ?? "nieuw";
-                                string taal = reader["language"] as string ?? "";
-                                byte[] logo = reader["logo"] != DBNull.Value ? (byte[])reader["logo"] : null;
-                                string nacecode = reader["nacecode_code"] as string ?? "";
-
-                                Bedrijf bedrijf = new Bedrijf(
-                                    id,
-                                    naam,
-                                    contactpersoon,
-                                    adres,
-                                    postcode,
-                                    gemeente,
-                                    land,
-                                    telefoon,
-                                    email,
-                                    btwNummer,
-                                    login,
-                                    wachtwoord,
-                                    registratiedatum,
-                                    acceptatiedatum,
-                                    laatstGewijzigd,
-                                    status,
-                                    taal,
-                                    logo,
-                                    nacecode
-                                );
-                                bedrijven.Add(bedrijf);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fout bij ophalen bedrijven: " + ex.Message);
-            }
-            return bedrijven;
-        }
-
-        /// <summary>
-        /// Voegt een nieuw bedrijf toe aan de database.
-        /// Het wachtwoord wordt automatisch gehasht met PasswordHelper.
-        /// </summary>
-        /// <param name="bedrijf">Bedrijf met cleartext wachtwoord</param>
-        public static void Insert(Bedrijf bedrijf)
-        {
-            string query = @"INSERT INTO Companies 
-                                (name, contact, address, zip, city, country, phone, email, btw, login, password, regdate, acceptdate, lastmodified, status, language, logo, nacecode_code) 
-                             VALUES 
-                                (@naam, @contact, @adres, @postcode, @gemeente, @land, @telefoon, @email, @btwNummer, @login, @password, @registratiedatum, @acceptatiedatum, @laatstGewijzigd, @status, @taal, @logo, @nacecode)";
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@naam", bedrijf.Naam);
-                        command.Parameters.AddWithValue("@contact", bedrijf.Contactpersoon);
-                        command.Parameters.AddWithValue("@adres", bedrijf.Adres);
-                        command.Parameters.AddWithValue("@postcode", bedrijf.Postcode);
-                        command.Parameters.AddWithValue("@gemeente", bedrijf.Gemeente);
-                        command.Parameters.AddWithValue("@land", bedrijf.Land);
-                        command.Parameters.AddWithValue("@telefoon", bedrijf.Telefoon);
-                        command.Parameters.AddWithValue("@email", bedrijf.Email);
-                        command.Parameters.AddWithValue("@btwNummer", bedrijf.BtwNummer);
-                        command.Parameters.AddWithValue("@login", bedrijf.Login);
-
-                        string wachtwoordHash = PasswordHelper.HashPassword(bedrijf.Wachtwoord ?? "");
-                        command.Parameters.AddWithValue("@password", wachtwoordHash);
-
-                        command.Parameters.AddWithValue("@registratiedatum", bedrijf.Registratiedatum);
-                        if (bedrijf.Acceptatiedatum.HasValue)
-                            command.Parameters.AddWithValue("@acceptatiedatum", bedrijf.Acceptatiedatum.Value);
-                        else
-                            command.Parameters.AddWithValue("@acceptatiedatum", DBNull.Value);
-                        command.Parameters.AddWithValue("@laatstGewijzigd", bedrijf.LaatstGewijzigd);
-                        command.Parameters.AddWithValue("@status", bedrijf.Status);
-                        command.Parameters.AddWithValue("@taal", bedrijf.Taal);
-                        command.Parameters.AddWithValue("@logo", bedrijf.Logo ?? (object)DBNull.Value);
-                        command.Parameters.AddWithValue("@nacecode", bedrijf.Nacecode);
-
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fout bij toevoegen bedrijf: " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Wijzigt alle velden van een bestaand bedrijf, behalve het wachtwoord.
-        /// Geef een nieuwe waarde voor nieuwWachtwoord als het wachtwoord moet worden aangepast.
-        /// </summary>
-        /// <param name="bedrijf">Bedrijf (wachtwoordveld wordt genegeerd)</param>
-        /// <param name="nieuwWachtwoord">Indien niet leeg: nieuw wachtwoord (cleartext), anders wordt het wachtwoord niet aangepast</param>
-        public static void Update(Bedrijf bedrijf, string nieuwWachtwoord)
-        {
-            string query;
-            bool wachtwoordWijzigen = !string.IsNullOrEmpty(nieuwWachtwoord);
-
-            if (wachtwoordWijzigen)
-            {
-                query = @"UPDATE Companies SET 
-                                name = @naam, contact = @contact, address = @adres, zip = @postcode, city = @gemeente, country = @land, 
-                                phone = @telefoon, email = @email, btw = @btwNummer, login = @login, password = @password, 
-                                regdate = @registratiedatum, acceptdate = @acceptatiedatum, lastmodified = @laatstGewijzigd, 
-                                status = @status, language = @taal, logo = @logo, nacecode_code = @nacecode
-                             WHERE id = @id";
-            }
-            else
-            {
-                query = @"UPDATE Companies SET 
-                                name = @naam, contact = @contact, address = @adres, zip = @postcode, city = @gemeente, country = @land, 
-                                phone = @telefoon, email = @email, btw = @btwNummer, login = @login, 
-                                regdate = @registratiedatum, acceptdate = @acceptatiedatum, lastmodified = @laatstGewijzigd, 
-                                status = @status, language = @taal, logo = @logo, nacecode_code = @nacecode
-                             WHERE id = @id";
-            }
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@naam", bedrijf.Naam);
-                        command.Parameters.AddWithValue("@contact", bedrijf.Contactpersoon);
-                        command.Parameters.AddWithValue("@adres", bedrijf.Adres);
-                        command.Parameters.AddWithValue("@postcode", bedrijf.Postcode);
-                        command.Parameters.AddWithValue("@gemeente", bedrijf.Gemeente);
-                        command.Parameters.AddWithValue("@land", bedrijf.Land);
-                        command.Parameters.AddWithValue("@telefoon", bedrijf.Telefoon);
-                        command.Parameters.AddWithValue("@email", bedrijf.Email);
-                        command.Parameters.AddWithValue("@btwNummer", bedrijf.BtwNummer);
-                        command.Parameters.AddWithValue("@login", bedrijf.Login);
-
-                        if (wachtwoordWijzigen)
-                        {
-                            string wachtwoordHash = PasswordHelper.HashPassword(nieuwWachtwoord);
-                            command.Parameters.AddWithValue("@password", wachtwoordHash);
-                        }
-
-                        command.Parameters.AddWithValue("@registratiedatum", bedrijf.Registratiedatum);
-                        if (bedrijf.Acceptatiedatum.HasValue)
-                            command.Parameters.AddWithValue("@acceptatiedatum", bedrijf.Acceptatiedatum.Value);
-                        else
-                            command.Parameters.AddWithValue("@acceptatiedatum", DBNull.Value);
-                        command.Parameters.AddWithValue("@laatstGewijzigd", bedrijf.LaatstGewijzigd);
-                        command.Parameters.AddWithValue("@status", bedrijf.Status);
-                        command.Parameters.AddWithValue("@taal", bedrijf.Taal);
-                        command.Parameters.AddWithValue("@logo", bedrijf.Logo ?? (object)DBNull.Value);
-                        command.Parameters.AddWithValue("@nacecode", bedrijf.Nacecode);
-                        command.Parameters.AddWithValue("@id", bedrijf.Id);
-
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fout bij wijzigen bedrijf: " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Wijzigt alleen het wachtwoord van het opgegeven bedrijf.
-        /// </summary>
-        /// <param name="bedrijfId">Het ID van het bedrijf</param>
-        /// <param name="nieuwWachtwoord">Het nieuwe cleartext wachtwoord</param>
-        public static void UpdateWachtwoord(int bedrijfId, string nieuwWachtwoord)
-        {
-            string query = "UPDATE Companies SET password = @password WHERE id = @id";
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        string wachtwoordHash = PasswordHelper.HashPassword(nieuwWachtwoord ?? "");
-                        command.Parameters.AddWithValue("@password", wachtwoordHash);
-                        command.Parameters.AddWithValue("@id", bedrijfId);
-
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fout bij wachtwoord wijzigen: " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Leest het logo van een bedrijf uit als byte array.
-        /// </summary>
-        /// <param name="bedrijfId">Bedrijfs-ID</param>
-        /// <returns>Logo als byte[] of null</returns>
-        public static byte[] GetLogo(int bedrijfId)
-        {
-            string query = "SELECT logo FROM Companies WHERE id = @id";
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@id", bedrijfId);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.Read() && !reader.IsDBNull(0))
-                            {
-                                return (byte[])reader["logo"];
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fout bij ophalen logo: " + ex.Message);
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Wijzigt alleen het logo van een bedrijf.
-        /// </summary>
-        /// <param name="bedrijfId">Bedrijfs-ID</param>
-        /// <param name="logo">Logo (byte[])</param>
-        public static void UpdateLogo(int bedrijfId, byte[] logo)
-        {
-            string query = "UPDATE Companies SET logo = @logo WHERE id = @id";
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@logo", logo ?? (object)DBNull.Value);
-                        command.Parameters.AddWithValue("@id", bedrijfId);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fout bij wijzigen logo: " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Authenticeert een gebruiker via login en wachtwoord (cleartext).
-        /// </summary>
-        /// <param name="login">Loginnaam</param>
-        /// <param name="password">Wachtwoord (cleartext)</param>
-        /// <returns>True als login en wachtwoord correct zijn</returns>
-        public static bool Authenticate(string login, string password)
-        {
-            string query = "SELECT password FROM Companies WHERE login = @login";
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@login", login);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                string hashFromDb = reader["password"] as string;
-                                return PasswordHelper.VerifyPassword(password, hashFromDb);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fout bij authenticatie: " + ex.Message);
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Verwijdert een bedrijf op basis van het Id.
-        /// </summary>
-        public static void Delete(int bedrijfId)
-        {
-            string query = "DELETE FROM Companies WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(connString))
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@id", bedrijfId);
-                    command.ExecuteNonQuery();
-                }
-            }
-        }
-        /// <summary>
-        /// Haalt alle bedrijven met de opgegeven status op.
-        /// </summary>
-        public static List<Bedrijf> GetByStatus(string status)
-        {
-            List<Bedrijf> bedrijven = new List<Bedrijf>();
-            string query = @"SELECT id, name, contact, address, zip, city, country, phone, email, btw, login, password, regdate, acceptdate, lastmodified, status, language, logo, nacecode_code
-                     FROM Companies WHERE status = @status";
-            using (SqlConnection connection = new SqlConnection(connString))
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@status", status);
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            int id = (int)reader["id"];
-                            string naam = reader["name"] as string ?? "";
-                            string contactpersoon = reader["contact"] as string ?? "";
-                            string adres = reader["address"] as string ?? "";
-                            string postcode = reader["zip"] as string ?? "";
-                            string gemeente = reader["city"] as string ?? "";
-                            string land = reader["country"] as string ?? "";
-                            string telefoon = reader["phone"] as string ?? "";
-                            string email = reader["email"] as string ?? "";
-                            string btwNummer = reader["btw"] as string ?? "";
-                            string login = reader["login"] as string ?? "";
-                            string wachtwoord = ""; // Laat leeg, nooit de hash teruggeven!
-                            DateTime registratiedatum = reader["regdate"] != DBNull.Value ? (DateTime)reader["regdate"] : DateTime.MinValue;
-                            DateTime? acceptatiedatum = reader["acceptdate"] != DBNull.Value ? (DateTime?)reader["acceptdate"] : null;
-                            DateTime laatstGewijzigd = reader["lastmodified"] != DBNull.Value ? (DateTime)reader["lastmodified"] : DateTime.MinValue;
-                            string statusStr = reader["status"] as string ?? "nieuw";
-                            string taal = reader["language"] as string ?? "";
-                            byte[] logo = reader["logo"] != DBNull.Value ? (byte[])reader["logo"] : null;
-                            string nacecode = reader["nacecode_code"] as string ?? "";
-
-                            Bedrijf bedrijf = new Bedrijf(
-                                id,
-                                naam,
-                                contactpersoon,
-                                adres,
-                                postcode,
-                                gemeente,
-                                land,
-                                telefoon,
-                                email,
-                                btwNummer,
-                                login,
-                                wachtwoord,
-                                registratiedatum,
-                                acceptatiedatum,
-                                laatstGewijzigd,
-                                statusStr,
-                                taal,
-                                logo,
-                                nacecode
-                            );
-                            bedrijven.Add(bedrijf);
+                            bedrijven.Add(FromReader(reader));
                         }
                     }
                 }
@@ -424,65 +32,200 @@ namespace BenchmarkToolLibrary.Data
             return bedrijven;
         }
 
-
-        /// <summary>
-        /// Wijzigt de status van een bedrijf.
-        /// </summary>
-        public static void UpdateStatus(int bedrijfId, string status)
+        public static void Insert(Bedrijf bedrijf)
         {
-            string query = "UPDATE Companies SET status = @status WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(connString))
+            // Bepaal eerstvolgende vrije id:
+            int newId = GetNextId();
+
+            string query = @"INSERT INTO Companies 
+        (id, name, contact, address, zip, city, country, phone, email, btw, login, password, regdate, acceptdate, lastmodified, status, language, logo, nacecode_code) 
+        VALUES 
+        (@id, @naam, @contact, @adres, @postcode, @gemeente, @land, @telefoon, @email, @btwNummer, @login, @password, @registratiedatum, @acceptatiedatum, @laatstGewijzigd, @status, @taal, @logo, @nacecode)";
+
+            using (SqlConnection conn = new SqlConnection(connString))
             {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(query, connection))
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    command.Parameters.AddWithValue("@status", status);
-                    command.Parameters.AddWithValue("@id", bedrijfId);
-                    command.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@id", newId);
+                    cmd.Parameters.AddWithValue("@naam", bedrijf.Naam ?? "");
+                    cmd.Parameters.AddWithValue("@contact", bedrijf.Contactpersoon ?? "");
+                    cmd.Parameters.AddWithValue("@adres", bedrijf.Adres ?? "");
+                    cmd.Parameters.AddWithValue("@postcode", bedrijf.Postcode ?? "");
+                    cmd.Parameters.AddWithValue("@gemeente", bedrijf.Gemeente ?? "");
+                    cmd.Parameters.AddWithValue("@land", bedrijf.Land ?? "");
+                    cmd.Parameters.AddWithValue("@telefoon", bedrijf.Telefoon ?? "");
+                    cmd.Parameters.AddWithValue("@email", bedrijf.Email ?? "");
+                    cmd.Parameters.AddWithValue("@btwNummer", bedrijf.BtwNummer ?? "");
+                    cmd.Parameters.AddWithValue("@login", bedrijf.Login ?? "");
+                    string wachtwoordHash = PasswordHelper.HashPassword(bedrijf.Wachtwoord ?? "");
+                    cmd.Parameters.AddWithValue("@password", wachtwoordHash);
+                    cmd.Parameters.AddWithValue("@registratiedatum", bedrijf.Registratiedatum);
+                    if (bedrijf.Acceptatiedatum.HasValue)
+                        cmd.Parameters.AddWithValue("@acceptatiedatum", bedrijf.Acceptatiedatum.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@acceptatiedatum", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@laatstGewijzigd", bedrijf.LaatstGewijzigd);
+                    cmd.Parameters.AddWithValue("@status", bedrijf.Status ?? "nieuw");
+                    cmd.Parameters.AddWithValue("@taal", bedrijf.Taal ?? "");
+                    cmd.Parameters.AddWithValue("@logo", bedrijf.Logo ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@nacecode", bedrijf.Nacecode ?? "");
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
+
+
+        public static void Update(Bedrijf bedrijf, string nieuwWachtwoord)
+        {
+            bool wachtwoordWijzigen = !string.IsNullOrEmpty(nieuwWachtwoord);
+            string query = wachtwoordWijzigen ?
+                @"UPDATE Companies SET name=@naam, contact=@contact, address=@adres, zip=@postcode, city=@gemeente, country=@land, phone=@telefoon, email=@email, btw=@btwNummer, login=@login, password=@password, regdate=@registratiedatum, acceptdate=@acceptatiedatum, lastmodified=@laatstGewijzigd, status=@status, language=@taal, logo=@logo, nacecode_code=@nacecode WHERE id=@id"
+                :
+                @"UPDATE Companies SET name=@naam, contact=@contact, address=@adres, zip=@postcode, city=@gemeente, country=@land, phone=@telefoon, email=@email, btw=@btwNummer, login=@login, regdate=@registratiedatum, acceptdate=@acceptatiedatum, lastmodified=@laatstGewijzigd, status=@status, language=@taal, logo=@logo, nacecode_code=@nacecode WHERE id=@id";
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@naam", bedrijf.Naam ?? "");
+                    cmd.Parameters.AddWithValue("@contact", bedrijf.Contactpersoon ?? "");
+                    cmd.Parameters.AddWithValue("@adres", bedrijf.Adres ?? "");
+                    cmd.Parameters.AddWithValue("@postcode", bedrijf.Postcode ?? "");
+                    cmd.Parameters.AddWithValue("@gemeente", bedrijf.Gemeente ?? "");
+                    cmd.Parameters.AddWithValue("@land", bedrijf.Land ?? "");
+                    cmd.Parameters.AddWithValue("@telefoon", bedrijf.Telefoon ?? "");
+                    cmd.Parameters.AddWithValue("@email", bedrijf.Email ?? "");
+                    cmd.Parameters.AddWithValue("@btwNummer", bedrijf.BtwNummer ?? "");
+                    cmd.Parameters.AddWithValue("@login", bedrijf.Login ?? "");
+                    if (wachtwoordWijzigen)
+                        cmd.Parameters.AddWithValue("@password", PasswordHelper.HashPassword(nieuwWachtwoord));
+                    cmd.Parameters.AddWithValue("@registratiedatum", bedrijf.Registratiedatum);
+                    if (bedrijf.Acceptatiedatum.HasValue)
+                        cmd.Parameters.AddWithValue("@acceptatiedatum", bedrijf.Acceptatiedatum.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@acceptatiedatum", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@laatstGewijzigd", bedrijf.LaatstGewijzigd);
+                    cmd.Parameters.AddWithValue("@status", bedrijf.Status ?? "nieuw");
+                    cmd.Parameters.AddWithValue("@taal", bedrijf.Taal ?? "");
+                    cmd.Parameters.AddWithValue("@logo", bedrijf.Logo ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@nacecode", bedrijf.Nacecode ?? "");
+                    cmd.Parameters.AddWithValue("@id", bedrijf.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateStatus(int bedrijfId, string status)
+        {
+            string query = "UPDATE Companies SET status = @status WHERE id = @id";
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@status", status);
+                    cmd.Parameters.AddWithValue("@id", bedrijfId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static int GetNextId()
+        {
+            int nextId = 1;
+            string query = "SELECT MAX(id) FROM Companies";
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    if (result != DBNull.Value && result != null)
+                        nextId = (int)result + 1;
+                }
+            }
+            return nextId;
+        }
+
 
         public static Bedrijf GetById(int bedrijfId)
         {
             Bedrijf bedrijf = null;
             string query = "SELECT id, name, contact, address, zip, city, country, phone, email, btw, login, regdate, acceptdate, lastmodified, status, language, logo, nacecode_code FROM Companies WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(connString))
+            using (SqlConnection conn = new SqlConnection(connString))
             {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(query, connection))
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    command.Parameters.AddWithValue("@id", bedrijfId);
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    cmd.Parameters.AddWithValue("@id", bedrijfId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
-                        {
-                            int id = (int)reader["id"];
-                            string naam = reader["name"] as string ?? "";
-                            string contactpersoon = reader["contact"] as string ?? "";
-                            string adres = reader["address"] as string ?? "";
-                            string postcode = reader["zip"] as string ?? "";
-                            string gemeente = reader["city"] as string ?? "";
-                            string land = reader["country"] as string ?? "";
-                            string telefoon = reader["phone"] as string ?? "";
-                            string email = reader["email"] as string ?? "";
-                            string btwNummer = reader["btw"] as string ?? "";
-                            string login = reader["login"] as string ?? "";
-                            DateTime registratiedatum = reader["regdate"] != DBNull.Value ? (DateTime)reader["regdate"] : DateTime.MinValue;
-                            DateTime? acceptatiedatum = reader["acceptdate"] != DBNull.Value ? (DateTime?)reader["acceptdate"] : null;
-                            DateTime laatstGewijzigd = reader["lastmodified"] != DBNull.Value ? (DateTime)reader["lastmodified"] : DateTime.MinValue;
-                            string status = reader["status"] as string ?? "nieuw";
-                            string taal = reader["language"] as string ?? "";
-                            byte[] logo = reader["logo"] != DBNull.Value ? (byte[])reader["logo"] : null;
-                            string nacecode = reader["nacecode_code"] as string ?? "";
-                            bedrijf = new Bedrijf(id, naam, contactpersoon, adres, postcode, gemeente, land, telefoon, email, btwNummer, login, "", registratiedatum, acceptatiedatum, laatstGewijzigd, status, taal, logo, nacecode);
-                        }
+                            bedrijf = FromReader(reader);
                     }
                 }
             }
             return bedrijf;
         }
 
+        public static List<Bedrijf> GetByStatus(string status)
+        {
+            List<Bedrijf> bedrijven = new List<Bedrijf>();
+            string query = @"SELECT id, name, contact, address, zip, city, country, phone, email, btw, login, regdate, acceptdate, lastmodified, status, language, logo, nacecode_code FROM Companies WHERE status = @status";
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@status", status);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            bedrijven.Add(FromReader(reader));
+                    }
+                }
+            }
+            return bedrijven;
+        }
 
+        public static void Delete(int bedrijfId)
+        {
+            string query = "DELETE FROM Companies WHERE id = @id";
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", bedrijfId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static Bedrijf FromReader(SqlDataReader reader)
+        {
+            return new Bedrijf(
+                (int)reader["id"],
+                reader["name"] as string ?? "",
+                reader["contact"] as string ?? "",
+                reader["address"] as string ?? "",
+                reader["zip"] as string ?? "",
+                reader["city"] as string ?? "",
+                reader["country"] as string ?? "",
+                reader["phone"] as string ?? "",
+                reader["email"] as string ?? "",
+                reader["btw"] as string ?? "",
+                reader["login"] as string ?? "",
+                "", // wachtwoord NOOIT uitlezen
+                reader["regdate"] != DBNull.Value ? (DateTime)reader["regdate"] : DateTime.MinValue,
+                reader["acceptdate"] != DBNull.Value ? (DateTime?)reader["acceptdate"] : null,
+                reader["lastmodified"] != DBNull.Value ? (DateTime)reader["lastmodified"] : DateTime.MinValue,
+                reader["status"] as string ?? "nieuw",
+                reader["language"] as string ?? "",
+                reader["logo"] != DBNull.Value ? (byte[])reader["logo"] : null,
+                reader["nacecode_code"] as string ?? ""
+            );
+        }
     }
 }

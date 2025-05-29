@@ -29,12 +29,7 @@
             <TextBox x:Name="txtLogin"/>
             <Label Content="Wachtwoord:"/>
             <PasswordBox x:Name="pwdWachtwoord"/>
-            <Label Content="Status:"/>
-            <ComboBox x:Name="cmbStatus" SelectedIndex="0">
-               <ComboBoxItem Content="nieuw" IsSelected="True"/>
-               <ComboBoxItem Content="actief"/>
-               <ComboBoxItem Content="geweigerd"/>
-            </ComboBox>
+            <!-- Status wordt altijd 'nieuw', veld is niet zichtbaar -->
             <Label Content="Taal:"/>
             <TextBox x:Name="txtTaal"/>
             <Label Content="Nacecode:"/>

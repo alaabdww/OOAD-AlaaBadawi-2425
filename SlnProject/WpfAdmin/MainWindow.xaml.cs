@@ -1,17 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using BenchmarkToolLibrary.Models;
 using BenchmarkToolLibrary.Data;
 
@@ -30,6 +21,7 @@ namespace WpfAdmin
         private void LaadBedrijven()
         {
             bedrijven = BedrijfData.GetAll();
+            lstBedrijven.ItemsSource = null;
             lstBedrijven.ItemsSource = bedrijven;
         }
 
@@ -51,7 +43,7 @@ namespace WpfAdmin
                 if (bedrijf.Logo != null && bedrijf.Logo.Length > 0)
                 {
                     BitmapImage logo = new BitmapImage();
-                    using (var stream = new System.IO.MemoryStream(bedrijf.Logo))
+                    using (System.IO.MemoryStream stream = new System.IO.MemoryStream(bedrijf.Logo))
                     {
                         logo.BeginInit();
                         logo.CacheOption = BitmapCacheOption.OnLoad;
@@ -91,15 +83,31 @@ namespace WpfAdmin
 
         private void BtnBewerk_Click(object sender, RoutedEventArgs e)
         {
-            Bedrijf bedrijf = lstBedrijven.SelectedItem as Bedrijf;
-            if (bedrijf == null)
+            Bedrijf origineel = lstBedrijven.SelectedItem as Bedrijf;
+            if (origineel == null)
             {
                 MessageBox.Show("Selecteer eerst een bedrijf.");
                 return;
             }
-            BedrijfEditWindow editWindow = new BedrijfEditWindow(bedrijf);
+            // Bewerk een kopie en zet pas na bevestiging alles terug in het origineel
+            Bedrijf kopie = origineel.Clone();
+            BedrijfEditWindow editWindow = new BedrijfEditWindow(kopie);
             if (editWindow.ShowDialog() == true)
             {
+                origineel.Naam = kopie.Naam;
+                origineel.Contactpersoon = kopie.Contactpersoon;
+                origineel.Adres = kopie.Adres;
+                origineel.Postcode = kopie.Postcode;
+                origineel.Gemeente = kopie.Gemeente;
+                origineel.Land = kopie.Land;
+                origineel.Telefoon = kopie.Telefoon;
+                origineel.Email = kopie.Email;
+                origineel.BtwNummer = kopie.BtwNummer;
+                origineel.Taal = kopie.Taal;
+                origineel.Status = kopie.Status;
+                origineel.Logo = kopie.Logo;
+                origineel.Nacecode = kopie.Nacecode;
+                origineel.LaatstGewijzigd = kopie.LaatstGewijzigd;
                 LaadBedrijven();
             }
         }
@@ -124,6 +132,14 @@ namespace WpfAdmin
                     MessageBox.Show("Fout bij verwijderen: " + ex.Message);
                 }
             }
+        }
+
+        private void BtnRegistratieAanvragen_Click(object sender, RoutedEventArgs e)
+        {
+            RegistratieAanvragenWindow aanvragenWindow = new RegistratieAanvragenWindow();
+            aanvragenWindow.Owner = this;
+            aanvragenWindow.ShowDialog();
+            LaadBedrijven();
         }
     }
 }

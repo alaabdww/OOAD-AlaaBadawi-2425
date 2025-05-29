@@ -47,8 +47,7 @@ namespace WpfUser
             txtFeedback.Text = "Wijzigingen opgeslagen.";
         }
 
-
-        private void btnTerug_Click(object sender, RoutedEventArgs e)
+        private void btnHome_Click(object sender, RoutedEventArgs e)
         {
             frame.Content = new DashboardPage(frame);
         }

@@ -1,26 +1,24 @@
+using BenchmarkToolLibrary.Data;
+using BenchmarkToolLibrary.Models;
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using BenchmarkToolLibrary.Models;
-using BenchmarkToolLibrary.Data;
 
 namespace WpfAdmin
 {
     public partial class BedrijfEditWindow : Window
     {
         private Bedrijf bedrijf;
-        private byte[] logoBytes = null;
+        private byte[] logoBytes;
 
-        public BedrijfEditWindow(Bedrijf bestaandBedrijf)
+        public BedrijfEditWindow(Bedrijf bedrijf)
         {
             InitializeComponent();
-            bedrijf = bestaandBedrijf;
-            ToonBedrijf();
-        }
+            this.bedrijf = bedrijf;
 
-        private void ToonBedrijf()
-        {
+            // Velden invullen met bestaande data
             txtNaam.Text = bedrijf.Naam;
             txtContactpersoon.Text = bedrijf.Contactpersoon;
             txtAdres.Text = bedrijf.Adres;
@@ -33,10 +31,21 @@ namespace WpfAdmin
             txtLogin.Text = bedrijf.Login;
             txtTaal.Text = bedrijf.Taal;
             txtNacecode.Text = bedrijf.Nacecode;
-            logoBytes = bedrijf.Logo;
 
-            if (logoBytes != null && logoBytes.Length > 0)
+            // Status selecteren
+            foreach (ComboBoxItem item in cmbStatus.Items)
             {
+                if ((string)item.Content == (bedrijf.Status ?? "nieuw"))
+                {
+                    cmbStatus.SelectedItem = item;
+                    break;
+                }
+            }
+
+            // Logo tonen
+            if (bedrijf.Logo != null && bedrijf.Logo.Length > 0)
+            {
+                logoBytes = bedrijf.Logo;
                 BitmapImage bitmap = new BitmapImage();
                 using (MemoryStream ms = new MemoryStream(logoBytes))
                 {
@@ -47,16 +56,6 @@ namespace WpfAdmin
                 }
                 imgLogo.Source = bitmap;
             }
-            else
-            {
-                imgLogo.Source = null;
-            }
-
-            cmbStatus.Items.Clear();
-            cmbStatus.Items.Add("nieuw");
-            cmbStatus.Items.Add("actief");
-            cmbStatus.Items.Add("geweigerd");
-            cmbStatus.SelectedItem = bedrijf.Status;
         }
 
         private void BtnSelectLogo_Click(object sender, RoutedEventArgs e)
@@ -92,29 +91,27 @@ namespace WpfAdmin
                 bedrijf.Telefoon = txtTelefoon.Text.Trim();
                 bedrijf.Email = txtEmail.Text.Trim();
                 bedrijf.BtwNummer = txtBtwNummer.Text.Trim();
-                bedrijf.Login = txtLogin.Text.Trim();
                 bedrijf.Taal = txtTaal.Text.Trim();
                 bedrijf.Nacecode = txtNacecode.Text.Trim();
                 bedrijf.Logo = logoBytes;
-                bedrijf.Status = (string)cmbStatus.SelectedItem;
+                string status = "nieuw";
+                if (cmbStatus.SelectedItem is ComboBoxItem selectedStatus)
+                {
+                    status = selectedStatus.Content.ToString();
+                }
+                bedrijf.Status = status;
                 bedrijf.LaatstGewijzigd = DateTime.Now;
 
-                string nieuwWachtwoord = pwdNieuwWachtwoord.Password;
-                if (!string.IsNullOrWhiteSpace(nieuwWachtwoord))
-                {
-                    BedrijfData.Update(bedrijf, nieuwWachtwoord); // Update met nieuw wachtwoord
-                }
-                else
-                {
-                    BedrijfData.Update(bedrijf, null); // Update zonder wachtwoord
-                }
+                string nieuwWachtwoord = pwdWachtwoord.Password;
+                BedrijfData.Update(bedrijf, string.IsNullOrWhiteSpace(nieuwWachtwoord) ? null : nieuwWachtwoord);
 
-                MessageBox.Show("Wijzigingen opgeslagen.", "Bevestiging", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bedrijf succesvol aangepast!", "Bevestiging", MessageBoxButton.OK, MessageBoxImage.Information);
                 this.DialogResult = true;
                 this.Close();
             }
             catch (Exception ex)
             {
+                MessageBox.Show("Fout bij opslaan: " + ex.Message, "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
                 txtFeedback.Text = "Fout: " + ex.Message;
             }
         }
