@@ -17,8 +17,24 @@ namespace BenchmarkToolLibrary.Data
         // Lijst van alle aanvragen in het geheugen
         private static List<RegistratieAanvraag> aanvragen = new List<RegistratieAanvraag>();
         private static int volgendeId = 1;
+
         // Volledig pad naar het JSON-bestand waar de aanvragen bewaard worden
         private static readonly string FilePath = @"C:\BenchmarkToolData\aanpassingen.json";
+
+        // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        // UITLEG OVER GEBRUIK VAN JSON (zie opdrachtbeperking)
+        //
+        // OPGELET: Het gebruik van JSON-bestanden om data op te slaan/te delen tussen applicaties
+        // hebben we niet expliciet in deze les gezien. Ik heb echter voor deze oplossing gekozen
+        // omdat ik *geen extra tabel mocht toevoegen* in de database (zoals opgegeven in de opdracht).
+        // Met enkel de bestaande tabellen kon ik wijzigingen van een gebruiker niet tijdelijk bijhouden
+        // én laten goedkeuren in het admin-gedeelte.  
+        //  
+        // In een ander vak heb ik kennisgemaakt met JSON-opslag als tussenstap voor data-uitwisseling.
+        // Hier gebruik ik dus een vergelijkbare techniek om toch de opdrachtwerking te realiseren zonder
+        // de database structuur aan te passen. De functionaliteit is volledig analoog aan wat een extra 
+        // SQL-tabel zou doen, maar dan via een bestand.
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         // Statische constructor: laad aanvragen bij het opstarten van de applicatie
         static RegistratieAanvraagData()
