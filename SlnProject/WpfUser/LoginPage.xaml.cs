@@ -1,3 +1,8 @@
+// LoginPage.xaml.cs
+// ------------------
+// Login-pagina voor gebruikers (bedrijven) binnen WpfUser. 
+// Hier kan een gebruiker inloggen met login en wachtwoord, of eventueel debuggen zonder wachtwoord.
+
 using BenchmarkToolLibrary.Data;
 using System;
 using System.Configuration;
@@ -11,13 +16,18 @@ namespace WpfUser
     {
         private Frame frame;
 
+        /// <summary>
+        /// Initialiseert de loginpagina, onthoudt het frame voor navigatie.
+        /// </summary>
         public LoginPage(Frame frame)
         {
             InitializeComponent();
             this.frame = frame;
         }
 
-        // Login-knop
+        /// <summary>
+        /// Login-knop: Valideert login en wachtwoord. Bij succes: ga naar dashboard.
+        /// </summary>
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             txtFeedback.Text = "";
@@ -45,7 +55,9 @@ namespace WpfUser
             }
         }
 
-        // Debug login zonder wachtwoord
+        /// <summary>
+        /// Debug-functie: bypass login zonder wachtwoordcontrole (voor testdoeleinden).
+        /// </summary>
         private void btnBypassLogin_Click(object sender, RoutedEventArgs e)
         {
             txtFeedback.Text = "";
@@ -69,12 +81,12 @@ namespace WpfUser
             }
         }
 
-        // Helper om bedrijfId op te halen via login (zonder wachtwoordcontrole)
+        /// <summary>
+        /// Haalt het bedrijfId op puur via login, zonder wachtwoordcontrole (enkel voor debug).
+        /// </summary>
         private int GetBedrijfIdZonderWachtwoord(string login)
         {
-            // ❗ Vervang dit door je echte connection string
             string connString = @"Server=(localdb)\MSSQLLocalDB;Database=BenchmarkDB;Trusted_Connection=True;";
-
             string query = "SELECT id FROM Companies WHERE login = @login";
 
             using (SqlConnection connection = new SqlConnection(connString))
@@ -97,9 +109,9 @@ namespace WpfUser
             return 0;
         }
 
-
-
-        // CheckBox aangevinkt → toon wachtwoord
+        /// <summary>
+        /// Wachtwoord tonen als checkbox aangevinkt is (wisselt tussen PasswordBox en TextBox).
+        /// </summary>
         private void chkShowPassword_Checked(object sender, RoutedEventArgs e)
         {
             txtWachtwoord.Text = pwdWachtwoord.Password;
@@ -107,7 +119,9 @@ namespace WpfUser
             txtWachtwoord.Visibility = Visibility.Visible;
         }
 
-        // CheckBox uitgevinkt → verberg wachtwoord
+        /// <summary>
+        /// Wachtwoord verbergen als checkbox uitgevinkt is.
+        /// </summary>
         private void chkShowPassword_Unchecked(object sender, RoutedEventArgs e)
         {
             pwdWachtwoord.Password = txtWachtwoord.Text;

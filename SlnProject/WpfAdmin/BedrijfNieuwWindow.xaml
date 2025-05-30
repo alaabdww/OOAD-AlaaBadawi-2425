@@ -7,34 +7,34 @@
       <ScrollViewer>
          <StackPanel>
             <TextBlock Text="Nieuw Bedrijf" FontWeight="Bold" FontSize="22" Foreground="Orange" Margin="0,0,0,14"/>
-            <Label Content="Naam:"/>
+            <Label Content="Naam:*"/>
             <TextBox x:Name="txtNaam"/>
-            <Label Content="Contactpersoon:"/>
+            <Label Content="Contactpersoon:*"/>
             <TextBox x:Name="txtContactpersoon"/>
-            <Label Content="Adres:"/>
+            <Label Content="Adres:*"/>
             <TextBox x:Name="txtAdres"/>
-            <Label Content="Postcode:"/>
+            <Label Content="Postcode:*"/>
             <TextBox x:Name="txtPostcode"/>
-            <Label Content="Gemeente:"/>
+            <Label Content="Gemeente:*"/>
             <TextBox x:Name="txtGemeente"/>
-            <Label Content="Land:"/>
+            <Label Content="Land:*"/>
             <TextBox x:Name="txtLand"/>
-            <Label Content="Telefoon:"/>
+            <Label Content="Telefoon:*"/>
             <TextBox x:Name="txtTelefoon"/>
-            <Label Content="E-mail:"/>
+            <Label Content="E-mail:*"/>
             <TextBox x:Name="txtEmail"/>
-            <Label Content="BTW-nummer:"/>
+            <Label Content="BTW-nummer:*"/>
             <TextBox x:Name="txtBtwNummer"/>
-            <Label Content="Login:"/>
+            <Label Content="Login:*"/>
             <TextBox x:Name="txtLogin"/>
-            <Label Content="Wachtwoord:"/>
+            <Label Content="Wachtwoord:*"/>
             <PasswordBox x:Name="pwdWachtwoord"/>
             <!-- Status wordt altijd 'nieuw', veld is niet zichtbaar -->
-            <Label Content="Taal:"/>
+            <Label Content="Taal:*"/>
             <TextBox x:Name="txtTaal"/>
-            <Label Content="Nacecode:"/>
+            <Label Content="Nacecode:*"/>
             <TextBox x:Name="txtNacecode"/>
-            <Label Content="Logo:"/>
+            <Label Content="Logo:*"/>
             <StackPanel Orientation="Horizontal">
                <Button Content="Selecteer logo..." Width="120" Click="BtnSelectLogo_Click" Background="Orange" Foreground="White"/>
                <Image x:Name="imgLogo" Height="65" Margin="10,0"/>

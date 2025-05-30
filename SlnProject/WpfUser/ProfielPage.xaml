@@ -4,54 +4,80 @@
       Background="LightGray">
    <Grid>
       <Border BorderBrush="Orange" BorderThickness="2" CornerRadius="8" Background="White" Padding="26" Margin="60">
-         <StackPanel>
-            <!-- HOME MENU KNOP -->
-            <Button Content="Home menu"
-                    Width="120" Margin="0,0,0,16"
-                    Background="Orange" Foreground="White" FontWeight="Bold"
-                    Click="btnHome_Click"/>
-            <TextBlock Text="Mijn Profiel" FontSize="20" Foreground="Orange" FontWeight="Bold" Margin="0,0,0,18"/>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-               <Label Content="Logo:" Width="90"/>
-               <Image x:Name="imgLogo" Height="56" Width="100" Margin="0,0,20,0"/>
+         <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+               <!-- HOME MENU KNOP -->
+               <Button Content="Home menu"
+                       Width="120" Margin="0,0,0,16"
+                       Background="Orange" Foreground="White" FontWeight="Bold"
+                       Click="btnHome_Click"/>
+               <TextBlock Text="Mijn Profiel" FontSize="20" Foreground="Orange" FontWeight="Bold" Margin="0,0,0,18"/>
+
+               <!-- LOGO UPLOAD + PREVIEW -->
+               <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                  <Label Content="Logo:" Width="90"/>
+                  <Image x:Name="imgLogo" Height="56" Width="100" Margin="0,0,20,0"/>
+                  <Button Content="Wijzig logo..." Width="110" Click="BtnSelectLogo_Click" Background="Orange" Foreground="White"/>
+               </StackPanel>
+
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Naam:" Width="120"/>
+                  <TextBox x:Name="txtNaam" Width="200"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Contactpersoon:" Width="120"/>
+                  <TextBox x:Name="txtContact" Width="200"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Adres:" Width="120"/>
+                  <TextBox x:Name="txtAdres" Width="200"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Postcode:" Width="120"/>
+                  <TextBox x:Name="txtPostcode" Width="80"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Gemeente:" Width="120"/>
+                  <TextBox x:Name="txtGemeente" Width="120"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Land:" Width="120"/>
+                  <TextBox x:Name="txtLand" Width="140"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Telefoon:" Width="120"/>
+                  <TextBox x:Name="txtTelefoon" Width="140"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="E-mail:" Width="120"/>
+                  <TextBox x:Name="txtEmail" Width="200"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="BTW-nummer:" Width="120"/>
+                  <TextBox x:Name="txtBtwNummer" Width="140"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Login:" Width="120"/>
+                  <TextBox x:Name="txtLogin" Width="140"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Wachtwoord:" Width="120"/>
+                  <PasswordBox x:Name="pwdWachtwoord" Width="200"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Taal:" Width="120"/>
+                  <TextBox x:Name="txtTaal" Width="100"/>
+               </StackPanel>
+               <StackPanel Orientation="Horizontal">
+                  <Label Content="Nacecode:" Width="120"/>
+                  <TextBox x:Name="txtNacecode" Width="120"/>
+               </StackPanel>
+               <TextBlock x:Name="txtFeedback" Foreground="Red" Margin="0,12,0,0"/>
+               <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                  <Button Content="Opslaan" Width="110" Background="Orange" Foreground="White" Click="btnOpslaan_Click"/>
+               </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-               <Label Content="Naam:" Width="90"/>
-               <TextBox x:Name="txtNaam" Width="200"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-               <Label Content="Contactpersoon:" Width="90"/>
-               <TextBox x:Name="txtContact" Width="200"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-               <Label Content="Adres:" Width="90"/>
-               <TextBox x:Name="txtAdres" Width="200"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-               <Label Content="Postcode:" Width="90"/>
-               <TextBox x:Name="txtPostcode" Width="80"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-               <Label Content="Gemeente:" Width="90"/>
-               <TextBox x:Name="txtGemeente" Width="120"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-               <Label Content="E-mail:" Width="90"/>
-               <TextBox x:Name="txtEmail" Width="200"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-               <Label Content="Taal:" Width="90"/>
-               <TextBox x:Name="txtTaal" Width="100"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-               <Label Content="Wachtwoord:" Width="90"/>
-               <PasswordBox x:Name="pwdWachtwoord" Width="200"/>
-            </StackPanel>
-            <TextBlock x:Name="txtFeedback" Foreground="Red" Margin="0,12,0,0"/>
-            <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
-               <Button Content="Opslaan" Width="110" Background="Orange" Foreground="White" Click="btnOpslaan_Click"/>
-            </StackPanel>
-         </StackPanel>
+         </ScrollViewer>
       </Border>
    </Grid>
 </Page>

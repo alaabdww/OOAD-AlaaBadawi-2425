@@ -1,47 +1,59 @@
+// Bedrijf.cs
+// ----------------------
+// Dit model stelt een bedrijf (klant) voor in de BenchmarkTool.
+// Het bevat alle bedrijfsgegevens zoals adres, contact, status, login, taal, logo en nacecode.
+// Dit model wordt gebruikt voor opslag, bewerking en uitwisseling van bedrijfsinfo tussen database en UI.
+
 using System;
-using System.Net.Mail;
 
 namespace BenchmarkToolLibrary.Models
 {
     public class Bedrijf
     {
+        // Unieke identificatie van het bedrijf (meestal de primary key in de database)
         public int Id { get; private set; }
 
+        // Bedrijfsnaam
         public string Naam { get; set; }
+        // Naam van de contactpersoon bij het bedrijf
         public string Contactpersoon { get; set; }
+        // Straat + huisnummer
         public string Adres { get; set; }
+        // Postcode
         public string Postcode { get; set; }
+        // Gemeente/stad
         public string Gemeente { get; set; }
+        // Land
         public string Land { get; set; }
+        // Telefoonnummer
         public string Telefoon { get; set; }
 
+        // Emailadres van het bedrijf (mag leeg zijn)
         private string _email;
         public string Email
         {
             get { return _email; }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException();
-                try
-                {
-                    MailAddress addr = new MailAddress(value);
-                    _email = value;
-                }
-                catch
-                {
-                    throw new ArgumentException();
-                }
+                // Email mag null of leeg zijn!
+                _email = value;
             }
         }
 
+        // BTW-nummer (mag leeg zijn)
         public string BtwNummer { get; set; }
+        // Loginnaam voor authenticatie
         public string Login { get; set; }
+        // Wachtwoord (nooit uitlezen, alleen voor opslag/hash)
         public string Wachtwoord { get; set; }
+        // Datum van registratie
         public DateTime Registratiedatum { get; set; }
+        // Optionele datum waarop het bedrijf geaccepteerd werd
         public DateTime? Acceptatiedatum { get; set; }
+        // Laatste wijzigingsdatum van het bedrijf
         public DateTime LaatstGewijzigd { get; set; }
 
+        // Status van het bedrijf ("nieuw", "actief", ...)
         private string _status = "nieuw";
         public string Status
         {
@@ -49,10 +61,16 @@ namespace BenchmarkToolLibrary.Models
             set { _status = value ?? "nieuw"; }
         }
 
+        // Voorkeurstaal (bijv. "NL", "FR", ...)
         public string Taal { get; set; }
+        // Bedrijfslogo als byte-array (kan null zijn)
         public byte[] Logo { get; set; }
+        // Nacecode van het bedrijf (branche-indicatie)
         public string Nacecode { get; set; }
 
+        /// <summary>
+        /// Constructor voor volledig ingevuld bedrijf (meestal gebruikt door database-laag)
+        /// </summary>
         public Bedrijf(int id, string naam, string contactpersoon, string adres, string postcode, string gemeente,
             string land, string telefoon, string email, string btwNummer, string login, string wachtwoord,
             DateTime registratiedatum, DateTime? acceptatiedatum, DateTime laatstGewijzigd, string status,
@@ -79,15 +97,22 @@ namespace BenchmarkToolLibrary.Models
             Nacecode = nacecode;
         }
 
+        /// <summary>
+        /// Parameterloze constructor (nodig voor JSON of handmatige creatie)
+        /// </summary>
         public Bedrijf() { }
 
-        // Setter zodat Data-layer Id kan instellen na Insert
+        /// <summary>
+        /// Stelt het ID van het bedrijf in (na toevoegen aan database)
+        /// </summary>
         public void SetId(int id)
         {
             Id = id;
         }
 
-        // Clone voor edit-copie
+        /// <summary>
+        /// Maak een volledige kopie van het bedrijf (voor edit zonder originele te wijzigen)
+        /// </summary>
         public Bedrijf Clone()
         {
             return new Bedrijf(

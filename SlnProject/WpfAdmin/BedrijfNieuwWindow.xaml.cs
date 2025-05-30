@@ -1,3 +1,8 @@
+// BedrijfNieuwWindow.cs
+// ---------------------
+// Dit WPF-window laat een admin toe een nieuwe bedrijfsaanvraag in te dienen. 
+// De gegevens worden als RegistratieAanvraag opgeslagen (voor goedkeuring), niet direct in de database.
+
 using BenchmarkToolLibrary.Data;
 using BenchmarkToolLibrary.Models;
 using System;
@@ -10,13 +15,20 @@ namespace WpfAdmin
 {
     public partial class BedrijfNieuwWindow : Window
     {
+        // Houdt de bytes van het gekozen logo bij.
         private byte[] logoBytes = null;
 
+        /// <summary>
+        /// Constructor voor het venster. Initialiseert de componenten.
+        /// </summary>
         public BedrijfNieuwWindow()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Handler voor de "Selecteer logo..."-knop. Opent een dialoog om een afbeelding te kiezen, en toont deze.
+        /// </summary>
         private void BtnSelectLogo_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -35,44 +47,59 @@ namespace WpfAdmin
             }
         }
 
+        /// <summary>
+        /// Handler voor de "Opslaan"-knop. Valideert alle velden, maakt een aanvraag en voegt deze toe aan de lijst van aanvragen.
+        /// </summary>
         private void BtnOpslaan_Click(object sender, RoutedEventArgs e)
         {
             txtFeedback.Text = "";
             try
             {
-                Bedrijf bedrijf = new Bedrijf();
-                bedrijf.Naam = txtNaam.Text.Trim();
-                bedrijf.Contactpersoon = txtContactpersoon.Text.Trim();
-                bedrijf.Adres = txtAdres.Text.Trim();
-                bedrijf.Postcode = txtPostcode.Text.Trim();
-                bedrijf.Gemeente = txtGemeente.Text.Trim();
-                bedrijf.Land = txtLand.Text.Trim();
-                bedrijf.Telefoon = txtTelefoon.Text.Trim();
-                bedrijf.Email = txtEmail.Text.Trim();
-                bedrijf.BtwNummer = txtBtwNummer.Text.Trim();
-                bedrijf.Login = txtLogin.Text.Trim();
-                bedrijf.Wachtwoord = pwdWachtwoord.Password;
-                bedrijf.Registratiedatum = DateTime.Now;
-                bedrijf.Acceptatiedatum = null;
-                bedrijf.LaatstGewijzigd = DateTime.Now;
-                bedrijf.Status = "nieuw"; // altijd nieuw voor nieuwe bedrijven
-                bedrijf.Taal = txtTaal.Text.Trim();
-                bedrijf.Logo = logoBytes;
-                bedrijf.Nacecode = txtNacecode.Text.Trim();
+                // Maak een nieuwe aanvraag op basis van de ingevulde velden
+                RegistratieAanvraag aanvraag = new RegistratieAanvraag();
+                aanvraag.Naam = txtNaam.Text.Trim();
+                aanvraag.Contactpersoon = txtContactpersoon.Text.Trim();
+                aanvraag.Adres = txtAdres.Text.Trim();
+                aanvraag.Postcode = txtPostcode.Text.Trim();
+                aanvraag.Gemeente = txtGemeente.Text.Trim();
+                aanvraag.Land = txtLand.Text.Trim();
+                aanvraag.Telefoon = txtTelefoon.Text.Trim();
+                aanvraag.Email = txtEmail.Text.Trim();
+                aanvraag.BtwNummer = txtBtwNummer.Text.Trim();
+                aanvraag.Login = txtLogin.Text.Trim();
+                aanvraag.Wachtwoord = pwdWachtwoord.Password;
+                aanvraag.Registratiedatum = DateTime.Now;
+                aanvraag.Taal = txtTaal.Text.Trim();
+                aanvraag.Logo = logoBytes;
+                aanvraag.Nacecode = txtNacecode.Text.Trim();
+                aanvraag.Type = "nieuw";
+                aanvraag.Status = "nieuw";
 
-                // Vereiste velden controleren
-                if (string.IsNullOrWhiteSpace(bedrijf.Naam) ||
-                    string.IsNullOrWhiteSpace(bedrijf.Login) ||
-                    string.IsNullOrWhiteSpace(bedrijf.Wachtwoord))
+                // Controleer dat elk veld is ingevuld (inclusief logo en nacecode)
+                if (string.IsNullOrWhiteSpace(aanvraag.Naam) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Contactpersoon) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Adres) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Postcode) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Gemeente) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Land) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Telefoon) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Email) ||
+                    string.IsNullOrWhiteSpace(aanvraag.BtwNummer) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Login) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Wachtwoord) ||
+                    string.IsNullOrWhiteSpace(aanvraag.Taal) ||
+                    aanvraag.Logo == null || aanvraag.Logo.Length == 0 ||
+                    string.IsNullOrWhiteSpace(aanvraag.Nacecode))
                 {
-                    txtFeedback.Text = "Vul minimaal naam, login en wachtwoord in!";
+                    txtFeedback.Text = "Vul ALLE velden in (inclusief logo en nacecode)!";
                     return;
                 }
 
-                BedrijfData.Insert(bedrijf);
+                // Sla de aanvraag op (voor goedkeuring door admin)
+                RegistratieAanvraagData.Insert(aanvraag);
 
                 txtFeedback.Foreground = System.Windows.Media.Brushes.Green;
-                txtFeedback.Text = "Bedrijf succesvol toegevoegd!";
+                txtFeedback.Text = "Bedrijf-aanvraag is ingediend en wacht op goedkeuring!";
                 this.DialogResult = true;
                 this.Close();
             }
@@ -83,6 +110,9 @@ namespace WpfAdmin
             }
         }
 
+        /// <summary>
+        /// Handler voor de "Annuleren"-knop. Sluit het venster zonder iets op te slaan.
+        /// </summary>
         private void BtnAnnuleren_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;

@@ -1,21 +1,29 @@
+// Categorie.cs
+// -------------
+// Dit model stelt een categorie voor in het BenchmarkTool-systeem.
+// Categorieën worden gebruikt om kosten, vragen of andere entiteiten te groeperen (bijv. "ICT", "Personeel", ...).
+// Ondersteunt hiërarchieën via ParentCategorieId (subcategorieën).
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BenchmarkToolLibrary.Models
 {
     public class Categorie
     {
+        // Unieke identificatie van de categorie (primary key in de database)
         public int Id { get; private set; }
 
+        // Naam van de categorie (bv. "ICT", "Personeel", ...)
         public string Naam { get; set; }
+
+        // Optionele ParentCategorieId: verwijst naar bovenliggende categorie (voor hiërarchie/nesting)
         public int? ParentCategorieId { get; set; }
+
+        // Korte beschrijving van de categorie (optioneel, nooit null)
         public string Beschrijving { get; set; }
 
         /// <summary>
-        /// Parameterloze constructor (voor bv. nieuwe, lege categorie of voor binding).
+        /// Parameterloze constructor (nodig voor data-binding of om een lege categorie aan te maken).
         /// </summary>
         public Categorie()
         {
@@ -23,7 +31,7 @@ namespace BenchmarkToolLibrary.Models
         }
 
         /// <summary>
-        /// Constructor zonder Id (voor toevoegen van nieuwe categorieën).
+        /// Constructor zonder Id (meestal voor nieuwe categorieën die nog niet in de database staan).
         /// </summary>
         public Categorie(string naam, int? parentCategorieId, string beschrijving)
         {
@@ -33,7 +41,7 @@ namespace BenchmarkToolLibrary.Models
         }
 
         /// <summary>
-        /// Constructor met Id (voor ophalen uit database).
+        /// Constructor met Id (meestal gebruikt bij ophalen uit de database).
         /// </summary>
         public Categorie(int id, string naam, int? parentCategorieId, string beschrijving)
         {
